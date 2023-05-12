@@ -40,56 +40,38 @@ install_reqpkg() {
 
 get_riscv_system() {
     cd $build_dir
-    if [ -f $build_dir/system.img* ]; then
+    if [ -f $build_dir/fedora-38-core-rootfs.tar.gz ]; then
         echo "clean..."
-        rm $build_dir/system.img*
+        rm $build_dir/fedora-38-core-rootfs.tar.gz
     fi
-    wget https://dl.fedoraproject.org/pub/alt/risc-v/repo/virt-builder-images/images/Fedora-Developer-37-20221130.n.0-mmc.raw.img.xz -O system.img.xz
-    if [ ! -f $build_dir/system.img.xz ]; then
-        echo "system image download failed!"
+    wget http://127.0.0.1/fedora-38-core-rootfs.tar.gz
+    if [ ! -f $build_dir/fedora-38-core-rootfs.tar.gz ]; then
+        echo "system tar download failed!"
         exit 2
     fi
-    unxz -v system.img.xz
-    img_file=system.img
-    
-    LOSETUP_D_IMG
 
-    device=`losetup -f --show -P ${img_file}`
-    trap 'LOSETUP_D_IMG' EXIT
-    kpartx -va ${device}
-    loopX=${device##*\/}
-    partprobe ${device}
+    mkdir rootfs
+    tar -zxvf fedora-38-core-rootfs.tar.gz -C rootfs
+    cp -b /etc/resolv.conf rootfs/etc/resolv.conf
+    chroot rootfs dnf update
+    chroot rootfs dnf install alsa-utils haveged wpa_supplicant vim net-tools iproute iputils NetworkManager bluez -y
+    chroot rootfs dnf install openssh-server openssh-clients passwd hostname parted linux-firmware-whence chkconfig e2fsprogs -y
+    echo fedora-riscv > rootfs/etc/hostname
+    cp $build_dir/config/extend-root.sh rootfs/etc/rc.d/init.d/extend-root.sh
+    chmod +x rootfs/etc/rc.d/init.d/extend-root.sh
 
-    bootp=/dev/mapper/${loopX}p3
-    rootp=/dev/mapper/${loopX}p4
+    cat << EOF | chroot rootfs  /bin/bash
+    echo 'fedora' | passwd --stdin root
+    chkconfig --add extend-root.sh
+    chkconfig extend-root.sh on
+EOF
 
-    if [ -d $image_mnt ]; then
-        LOSETUP_D_IMG
-        rmdir $image_mnt
-    fi
-    mkdir $image_mnt
-    
-    mount $rootp $image_mnt
-    mount $bootp $image_mnt/boot
-
-    chroot $image_mnt dnf remove kernel* -y
-    chroot $image_mnt dnf remove opensbi* -y
-    chroot $image_mnt dnf remove *bootloader* -y
-
-    cp -rfp $image_mnt $build_dir/rootfs
-    sync
-
-    umount $image_mnt/boot
-    umount $image_mnt
-    kpartx -d ${device}
-
-    rmdir $image_mnt
 }
 
 prepare_toolchain() {
     cd $build_dir
     if [ ! -d $build_dir/riscv64-gcc ]; then
-        wget https://github.com/chainsx/armbian-riscv-build/releases/download/toolchain/Xuantie-900-gcc-linux-5.10.4-glibc-x86_64-V2.6.1-20220906.tar.gz
+        wget http://127.0.0.1/Xuantie-900-gcc-linux-5.10.4-glibc-x86_64-V2.6.1-20220906.tar.gz
         tar -zxf Xuantie-900-gcc-linux-5.10.4-glibc-x86_64-V2.6.1-20220906.tar.gz
         rm *tar.gz && mv Xuantie* riscv64-gcc
     fi
@@ -134,8 +116,8 @@ mk_img() {
     sdbootp=/dev/mapper/${loopX}p1
     sdrootp=/dev/mapper/${loopX}p2
     
-    mkfs.ext4 -L boot ${sdbootp}
-    mkfs.ext4 -L root ${sdrootp}
+    mkfs.ext4 -L fedora-boot ${sdbootp}
+    mkfs.ext4 -L fedora-root ${sdrootp}
     mkdir -p ${root_mnt} ${boot_mnt}
     mount -t ext4 ${sdbootp} ${boot_mnt}
     mount -t ext4 ${sdrootp} ${root_mnt}
@@ -181,7 +163,6 @@ mk_img() {
 
     losetup -D
     kpartx -d ${img_file}
-    rm system.img
 }
 
 build_dir=$(pwd)
