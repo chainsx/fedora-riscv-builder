@@ -13,9 +13,12 @@ git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv
 bash build.sh
 ```
 
-### 下载
+### 下载预构建系统
 
 [Release](https://github.com/chainsx/fedora-riscv-builder/releases)
+
+* 用户名：`root`
+* 密码：`fedora`
 
 ----
 
