@@ -6,13 +6,16 @@
 
 * [LicheePi-4A （8+8 内测版）](./doc/install-guild-licheepi4a.md)
 
-
 ### 自行构建
 
 ```
 git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
 bash build.sh
 ```
+
+### 下载
+
+[Release](https://github.com/chainsx/fedora-riscv-builder/releases)
 
 ----
 
