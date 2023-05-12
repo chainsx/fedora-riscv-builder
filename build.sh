@@ -12,11 +12,6 @@ LOSETUP_D_IMG(){
             umount ${boot_mnt}
         fi
     fi
-    if [ -d $image_mnt ]; then
-        if grep -q "$image_mnt " /proc/mounts ; then
-            umount $image_mnt
-        fi
-    fi
     if [ "x$device" != "x" ]; then
         kpartx -d ${device}
         losetup -d ${device}
@@ -28,9 +23,6 @@ LOSETUP_D_IMG(){
     if [ -d ${boot_mnt} ]; then
         rm -rf ${boot_mnt}
     fi
-    if [ -d ${image_mnt} ]; then
-        rm -rf ${image_mnt}
-    fi
     set -e
 }
 
@@ -40,30 +32,39 @@ install_reqpkg() {
 
 get_riscv_system() {
     cd $build_dir
-    if [ -f $build_dir/fedora-38-core-rootfs.tar.gz ]; then
-        echo "clean..."
-        rm $build_dir/fedora-38-core-rootfs.tar.gz
+    if [ -f $build_dir/*rootfs.tar.gz ]; then
+        echo "clean tar..."
+        rm $build_dir/*rootfs.tar.gz
     fi
-    wget http://127.0.0.1/fedora-38-core-rootfs.tar.gz
-    if [ ! -f $build_dir/fedora-38-core-rootfs.tar.gz ]; then
+    wget $fedora_core_rootfs_addr -O rootfs.tar.gz
+    if [ ! -f $build_dir/rootfs.tar.gz ]; then
         echo "system tar download failed!"
         exit 2
     fi
 
-    mkdir rootfs
-    tar -zxvf fedora-38-core-rootfs.tar.gz -C rootfs
-    cp -b /etc/resolv.conf rootfs/etc/resolv.conf
-    chroot rootfs dnf update
-    chroot rootfs dnf install alsa-utils haveged wpa_supplicant vim net-tools iproute iputils NetworkManager bluez -y
-    chroot rootfs dnf install openssh-server openssh-clients passwd hostname parted linux-firmware-whence chkconfig e2fsprogs -y
-    echo fedora-riscv > rootfs/etc/hostname
-    cp $build_dir/config/extend-root.sh rootfs/etc/rc.d/init.d/extend-root.sh
-    chmod +x rootfs/etc/rc.d/init.d/extend-root.sh
+    if [ -d ${rootfs_dir} ]; then
+        echo "clean rootfs..."
+        rm -rf ${rootfs_dir}
+    fi
 
-    cat << EOF | chroot rootfs  /bin/bash
+    mkdir ${rootfs_dir}
+    tar -zxvf rootfs.tar.gz -C ${rootfs_dir}
+    cp -b /etc/resolv.conf ${rootfs_dir}/etc/resolv.conf
+    chroot ${rootfs_dir} dnf update
+    chroot ${rootfs_dir} dnf install alsa-utils haveged wpa_supplicant vim net-tools iproute iputils NetworkManager bluez -y
+    chroot ${rootfs_dir} dnf install openssh-server openssh-clients passwd hostname parted linux-firmware-whence chkconfig e2fsprogs -y
+    echo fedora-riscv > ${rootfs_dir}/etc/hostname
+    cp $build_dir/config/extend-root.sh ${rootfs_dir}/etc/rc.d/init.d/extend-root.sh
+    cp $build_dir/config/extend-root.sh ${rootfs_dir}/etc/rc.d/init.d/lpi4a-sysfan.sh
+    chmod +x ${rootfs_dir}/etc/rc.d/init.d/extend-root.sh
+    chmod +x ${rootfs_dir}/etc/rc.d/init.d/lpi4a-sysfan.sh
+
+    cat << EOF | chroot ${rootfs_dir}  /bin/bash
     echo 'fedora' | passwd --stdin root
     chkconfig --add extend-root.sh
     chkconfig extend-root.sh on
+    chkconfig --add lpi4a-sysfan.sh
+    chkconfig lpi4a-sysfan.sh on
 EOF
 
 }
@@ -71,8 +72,8 @@ EOF
 prepare_toolchain() {
     cd $build_dir
     if [ ! -d $build_dir/riscv64-gcc ]; then
-        wget http://127.0.0.1/Xuantie-900-gcc-linux-5.10.4-glibc-x86_64-V2.6.1-20220906.tar.gz
-        tar -zxf Xuantie-900-gcc-linux-5.10.4-glibc-x86_64-V2.6.1-20220906.tar.gz
+        wget $toolchain_addr -O toolchain.tar.gz
+        tar -zxf toolchain.tar.gz
         rm *tar.gz && mv Xuantie* riscv64-gcc
     fi
 }
@@ -136,18 +137,17 @@ mk_img() {
     echo "/dev/mmcblk1p1  /boot ext4    defaults,noatime 0 0" >> ${build_dir}/rootfs/etc/fstab
 
     rsync -avHAXq ${build_dir}/rootfs/* ${root_mnt}
-
     sync
 
     umount $sdrootp
     umount $sdbootp
 
     dd if=$sdbootp of=boot.img status=progress
-    dd if=$sdrootp of=rootfs.img status=progress
+    dd if=$sdrootp of=root.img status=progress
     sync
 
     mount -t ext4 boot.img ${boot_mnt}
-    mount -t ext4 rootfs.img ${root_mnt}
+    mount -t ext4 root.img ${root_mnt}
 
     if [ -f $boot_mnt/config.txt ]; then
         rm $boot_mnt/config.txt
@@ -165,13 +165,38 @@ mk_img() {
     kpartx -d ${img_file}
 }
 
+comp_img() {
+    if [ ! -f $build_dir/sd.img ]; then
+        echo "sd flash file build failed!"
+        exit 2
+    fi
+    if [ ! -f $build_dir/root.img ]; then
+        echo "emmc root flash file build failed!"
+        exit 2
+    fi
+    if [ ! -f $build_dir/boot.img ]; then
+        echo "emmc boot flash file build failed!"
+        exit 2
+    fi
+
+    tar -zcvf Fedora-38-Minimal-LicheePi-4A-riscv64-emmc.tar.gz boot.img root.img
+
+    xz -v sd.img
+    mv sd.img.xz Fedora-38-Minimal-LicheePi-4A-riscv64-sd.tar.gz boot.img root.img
+
+}
+
 build_dir=$(pwd)
-image_mnt=${build_dir}/image_mnt
 boot_mnt=${build_dir}/boot_tmp
 root_mnt=${build_dir}/root_tmp
+rootfs_dir=${build_dir}/rootfs
+
+fedora_core_rootfs_addr="https://github.com/chainsx/fedora-riscv-builder/releases/download/basic-data/fedora-38-core-rootfs.tar.gz"
+toolchain_addr="https://github.com/chainsx/armbian-riscv-build/releases/download/toolchain/Xuantie-900-gcc-linux-5.10.4-glibc-x86_64-V2.6.1-20220906.tar.gz"
 
 install_reqpkg
 get_riscv_system
 prepare_toolchain
 build_kernel
 mk_img
+comp_img
