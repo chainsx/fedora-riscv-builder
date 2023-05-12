@@ -3,12 +3,12 @@
 ### 支持情况
 
 * GPU: TODO
-* 风扇：TODO
+* 风扇：脚本已支持
 * 桌面：待测试
 
 ### 下载系统和 u-boot 文件
 
-1.  到本项目 [Release](https://github.com/chainsx/armbian-riscv-build/releases) 下载适用于 LicheePi 4A 的系统，可以选择 EMMC 或 SD 镜像。
+1.  到本项目 [Release](https://github.com/chainsx/fedora-riscv-builder/releases) 下载适用于 LicheePi 4A 的系统，可以选择 EMMC 或 SD 镜像。
 2.  如果需要使用 SD 镜像，需要下载适用于 LicheePi 4A 引导 SD 卡镜像的 [u-boot-with-spl.bin](../firmware/u-boot-with-spl.bin)。
 
 ### 安装系统到 EMMC
