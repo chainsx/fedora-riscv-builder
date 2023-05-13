@@ -58,15 +58,13 @@ jobs:
           sudo -E apt-get -y install build-essential gcc-riscv64-linux-gnu asciidoc binutils bzip2 gawk gettext git libncurses5-dev msmtp libssl-dev texinfo libglib2.0-dev
           sudo -E apt-get -y install patch python2.7 unzip zlib1g-dev lib32gcc-s1 libc6-dev-i386 subversion flex node-uglify git gcc-multilib p7zip p7zip-full xmlto libreadline-dev
           sudo -E apt-get -y install python3 python3-pip python3-pyelftools haveged lrzsz scons ecj fastjar re2c xz-utils tar binutils ccache curl wget vim nano rsync coreutils
-          sudo -E apt-get -y install qemu-utils upx-ucl libelf-dev autoconf automake libtool autopoint device-tree-compiler g++-multilib antlr3 gperf wget curl swig  gcc g++
-          wget http://ftp.cn.debian.org/debian/pool/main/d/debian-ports-archive-keyring/debian-ports-archive-keyring_2023.02.01_all.deb
+          sudo -E apt-get -y install qemu-utils upx-ucl libelf-dev autoconf automake libtool autopoint antlr3 gperf wget curl swig  gcc g++
           sudo -E apt-get -y autoremove --purge
           sudo -E apt-get clean
       - name: Build
         shell: bash
         run: |
           ls
-          cd fedora-riscv-builder
           bash build.sh
       - name: Upload
         if: inputs.release-id != '' && inputs.github-token != ''
@@ -75,7 +73,7 @@ jobs:
             GITHUB_TOKEN: ${{ inputs.github-token }}
         with:
           release_id: ${{ inputs.release-id }}
-          file: "./fedora-riscv-builder/*.img.xz*;./fedora-riscv-builder/*.tar.gz*"
+          file: "./*.img.xz*;./*.tar.gz*"
           draft: false
       - name: Rollback release
         if: failure() && inputs.release-id != '' && inputs.github-token != ''
