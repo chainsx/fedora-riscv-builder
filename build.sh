@@ -182,7 +182,10 @@ comp_img() {
     tar -zcvf Fedora-38-Minimal-LicheePi-4A-riscv64-emmc.tar.gz boot.img root.img
 
     xz -v sd.img
-    mv sd.img.xz Fedora-38-Minimal-LicheePi-4A-riscv64-sd.tar.gz boot.img root.img
+    mv sd.img.xz Fedora-38-Minimal-LicheePi-4A-riscv64-sd.img.xz
+    
+    sha256sum Fedora-38-Minimal-LicheePi-4A-riscv64-emmc.tar.gz >> Fedora-38-Minimal-LicheePi-4A-riscv64-emmc.tar.gz.sha256
+    sha256sum Fedora-38-Minimal-LicheePi-4A-riscv64-sd.img.xz >> Fedora-38-Minimal-LicheePi-4A-riscv64-sd.img.xz.sha256
 
 }
 
