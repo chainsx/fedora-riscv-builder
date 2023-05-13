@@ -64,8 +64,7 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          ls
-          bash build.sh
+          sudo bash build.sh
       - name: Upload
         if: inputs.release-id != '' && inputs.github-token != ''
         uses: xresloader/upload-to-github-release@v1
