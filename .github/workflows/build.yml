@@ -66,7 +66,7 @@ jobs:
         run: |
           sudo bash build.sh
       - name: Upload
-        if: needs.prepare_release.outputs.release_id != '' && ${{ secrets.GITHUB_TOKEN }} != ''
+        if: needs.prepare_release.outputs.release_id != ''
         uses: xresloader/upload-to-github-release@v1
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -75,7 +75,7 @@ jobs:
           file: "./*.img.xz*;./*.tar.gz*"
           draft: false
       - name: Rollback release
-        if: failure() && needs.prepare_release.outputs.release_id != '' && ${{ secrets.GITHUB_TOKEN }} != ''
+        if: failure() && needs.prepare_release.outputs.release_id != ''
         uses: author/action-rollback@stable
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
