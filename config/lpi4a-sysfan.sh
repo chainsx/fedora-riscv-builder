@@ -1,8 +1,5 @@
 #!/bin/bash
-# chkconfig: - 99 10
-# description: sys fan
-
-set -e
+#ENABLE FAN (PWM1)
 
 echo 1 > /sys/class/pwm/pwmchip0/export
 echo 1000000 > /sys/class/pwm/pwmchip0/pwm1/period
