@@ -51,20 +51,21 @@ get_riscv_system() {
     tar -zxvf rootfs.tar.gz -C ${rootfs_dir}
     cp -b /etc/resolv.conf ${rootfs_dir}/etc/resolv.conf
     chroot ${rootfs_dir} dnf update
-    chroot ${rootfs_dir} dnf install alsa-utils haveged wpa_supplicant vim net-tools iproute iputils NetworkManager bluez -y
-    chroot ${rootfs_dir} dnf install openssh-server openssh-clients passwd hostname parted linux-firmware-whence chkconfig e2fsprogs -y
+    chroot ${rootfs_dir} dnf install alsa-utils haveged wpa_supplicant vim net-tools iproute iputils NetworkManager bluez fedora-release-server -y
+    chroot ${rootfs_dir} dnf install wget openssh-server openssh-clients passwd hostname parted linux-firmware-whence chkconfig e2fsprogs -y
     echo fedora-riscv > ${rootfs_dir}/etc/hostname
     cp $build_dir/config/extend-root.sh ${rootfs_dir}/etc/rc.d/init.d/extend-root.sh
-    cp $build_dir/config/extend-root.sh ${rootfs_dir}/etc/rc.d/init.d/lpi4a-sysfan.sh
+    cp $build_dir/config/lpi4a-sysfan.sh ${rootfs_dir}/opt/lpi4a-sysfan.sh
+    cp $build_dir/config/lpi4a-sysfan.service ${rootfs_dir}/usr/lib/systemd/system/lpi4a-sysfan.service
+    chmod 755 ${rootfs_dir}/opt/lpi4a-sysfan.sh
+    chmod 755 ${rootfs_dir}/usr/lib/systemd/system/lpi4a-sysfan.service
     chmod +x ${rootfs_dir}/etc/rc.d/init.d/extend-root.sh
-    chmod +x ${rootfs_dir}/etc/rc.d/init.d/lpi4a-sysfan.sh
 
     cat << EOF | chroot ${rootfs_dir}  /bin/bash
     echo 'fedora' | passwd --stdin root
     chkconfig --add extend-root.sh
     chkconfig extend-root.sh on
-    chkconfig --add lpi4a-sysfan.sh
-    chkconfig lpi4a-sysfan.sh on
+    systemctl --no-reload enable lpi4a-sysfan.service
 EOF
 
 }
