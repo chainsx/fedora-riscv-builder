@@ -131,6 +131,7 @@ mk_img() {
 
     cp $build_dir/firmware/light_aon_fpga.bin $boot_mnt
     cp $build_dir/firmware/light_c906_audio.bin $boot_mnt
+    cp $build_dir/firmware/fw_dynamic.bin $boot_mnt
     cp $build_dir/thead-kernel/arch/riscv/boot/Image $boot_mnt
     cp $build_dir/thead-kernel/arch/riscv/boot/dts/thead/*lpi4a*dtb $boot_mnt
 
