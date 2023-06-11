@@ -24,9 +24,10 @@ bash build.sh
 
 ### 说明
 
-本项目用到的名为 fedora-38-core-rootfs.tar.gz 的文件需要使用 risc-v 主机进行构建，构建过程如下，如果不想自己构建，可以使用项目提供的预构建文件。
+本项目用到的名为 fedora-38-core-rootfs.tar.gz 的文件需要使用 risc-v 架构的 Fedora 38 主机进行构建，构建过程如下，如果不想自己构建，可以使用项目提供的预构建文件。
 
 ```
+sudo su && cd ~
 WORKDIR=$(pwd)
 
 cd $WORKDIR
@@ -39,4 +40,9 @@ rpm -ivh --nodeps --root $WORKDIR/rootfs/ http://fedora.riscv.rocks/repos-dist/f
 mkdir -p $WORKDIR/rootfs/etc/yum.repos.d
 cp /etc/yum.repos.d/*repo $WORKDIR/rootfs/etc/yum.repos.d
 dnf --installroot=$WORKDIR/rootfs/ install dnf --nogpgcheck -y
+
+cd $WORKDIR/rootfs
+tar -zcvf fedora-38-core-rootfs.tar.gz .
 ```
+
+这样，你在 /root 目录下可以得到项目脚本构建所需的 fedora-38-core-rootfs.tar.gz 文件。
