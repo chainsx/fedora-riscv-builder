@@ -46,3 +46,7 @@ tar -zcvf fedora-38-core-rootfs.tar.gz .
 ```
 
 这样，你在 /root 目录下可以得到项目脚本构建所需的 fedora-38-core-rootfs.tar.gz 文件。
+
+## 引用 && 感谢
+
+[fedora.riscv.rocks](http://fedora.riscv.rocks)
