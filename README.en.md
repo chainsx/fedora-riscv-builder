@@ -46,3 +46,7 @@ tar -zcvf fedora-38-core-rootfs.tar.gz .
 ```
 
 This way, you will obtain the `fedora-38-core-rootfs.tar.gz` file required for the project script in the `/root` directory.
+
+## Reference && Thanks
+
+[fedora.riscv.rocks](http://fedora.riscv.rocks)
