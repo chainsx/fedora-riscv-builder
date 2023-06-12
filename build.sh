@@ -27,7 +27,7 @@ LOSETUP_D_IMG(){
 }
 
 install_reqpkg() {
-    apt install make bison bc flex kpartx xz-utils qemu-user-static
+    apt install make bison bc flex kpartx xz-utils qemu-user-static libssl-dev -y
 }
 
 get_riscv_system() {
@@ -50,7 +50,7 @@ get_riscv_system() {
     mkdir ${rootfs_dir}
     tar -zxvf rootfs.tar.gz -C ${rootfs_dir}
     cp -b /etc/resolv.conf ${rootfs_dir}/etc/resolv.conf
-    chroot ${rootfs_dir} dnf update
+    chroot ${rootfs_dir} dnf update -y
     chroot ${rootfs_dir} dnf install alsa-utils haveged wpa_supplicant vim net-tools iproute iputils NetworkManager bluez fedora-release-server -y
     chroot ${rootfs_dir} dnf install wget openssh-server openssh-clients passwd hostname parted linux-firmware-whence chkconfig e2fsprogs -y
     echo fedora-riscv > ${rootfs_dir}/etc/hostname
