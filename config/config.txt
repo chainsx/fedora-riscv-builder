@@ -1,3 +1,0 @@
-fdt_file=light-lpi4a.dtb
-kernel_file=Image
-bootargs=console=ttyS0,115200 root=/dev/mmcblk1p2 rootfstype=ext4 rootwait rw earlycon clk_ignore_unused loglevel=7 eth=$ethaddr rootrwoptions=rw,noatime rootrwreset=yes init=/lib/systemd/systemd

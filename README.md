@@ -1,30 +1,30 @@
 # Fedora-RISCV-Builder
 
-## 开始
+## Getting Started
 
-### 目前支持的开发板
+### Supported SBCs
 
-* [LicheePi-4A （8+8 内测版）](./doc/install-guild-licheepi4a.md)
+* [LicheePi-4A (8 + 8 Developer Edition)](./doc/install-guild-licheepi4a.md)
 
-### 自行构建
+### Build Manually
 
 ```
 git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
 bash build.sh
 ```
 
-### 下载预构建系统
+### Download Pre-built Systems
 
 [Release](https://github.com/chainsx/fedora-riscv-builder/releases)
 
-* 用户名：`root`
-* 密码：`fedora`
+* Username: `root`
+* Password: `fedora`
 
 ----
 
-### 说明
+### Instructions
 
-本项目用到的名为 fedora-38-core-rootfs.tar.gz 的文件需要使用 risc-v 架构的 Fedora 38 主机进行构建，构建过程如下，如果不想自己构建，可以使用项目提供的预构建文件。
+The project requires a file named `fedora-38-core-rootfs.tar.gz` to be built using a Fedora 38 host with the RISC-V architecture. The build process is as follows. If you do not wish to build it yourself, you can use the pre-built file provided by the project.
 
 ```
 sudo su && cd ~
@@ -45,8 +45,8 @@ cd $WORKDIR/rootfs
 tar -zcvf fedora-38-core-rootfs.tar.gz .
 ```
 
-这样，你在 /root 目录下可以得到项目脚本构建所需的 fedora-38-core-rootfs.tar.gz 文件。
+This way, you will obtain the `fedora-38-core-rootfs.tar.gz` file required for the project script in the `/root` directory.
 
-## 引用 && 感谢
+## Reference && Thanks
 
 [fedora.riscv.rocks](http://fedora.riscv.rocks)
