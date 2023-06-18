@@ -163,8 +163,8 @@ mk_img() {
     mkfs.vfat -n fedora-boot ${sdbootp}
     mkfs.ext4 -L fedora-root ${sdrootp}
     mkdir -p ${root_mnt} ${boot_mnt}
-    mount -t ext4 ${sdbootp} ${boot_mnt}
-    mount -t ext4 ${sdrootp} ${root_mnt}
+    mount ${sdbootp} ${boot_mnt}
+    mount ${sdrootp} ${root_mnt}
 
     if [ -d $boot_mnt/extlinux ]; then
         rm -rf $boot_mnt/extlinux
