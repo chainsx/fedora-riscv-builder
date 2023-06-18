@@ -187,6 +187,9 @@ mk_img() {
     echo "LABEL=fedora-root  / ext4    defaults,noatime 0 0" > ${build_dir}/rootfs/etc/fstab
     echo "LABEL=fedora-boot  /boot vfat    defaults,noatime 0 0" >> ${build_dir}/rootfs/etc/fstab
 
+    cp -rfp ${build_dir}/rootfs/boot/* $boot_mnt
+    rm -rf ${build_dir}/rootfs/boot/*
+
     rsync -avHAXq ${build_dir}/rootfs/* ${root_mnt}
     sync
     sleep 10
