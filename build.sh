@@ -171,11 +171,16 @@ mk_img() {
     fi
 
     mkdir -p $boot_mnt/extlinux
+
+    line=$(blkid | grep $rootp)
+    uuid=${line#*UUID=\"}
+    uuid=${uuid%%\"*}
+    
     echo "label Fedora
     kernel /Image
     initrd /initrd.img
     fdt /light-lpi4a.dtb
-    append  console=ttyS0,115200 root=/dev/mmcblk1p2 rootfstype=ext4 rootwait rw earlycon clk_ignore_unused loglevel=7 eth=$ethaddr rootrwoptions=rw,noatime rootrwreset=yes init=/lib/systemd/systemd" \
+    append  console=ttyS0,115200 root=UUID=${uuid} rootfstype=ext4 rootwait rw earlycon clk_ignore_unused loglevel=7 eth=$ethaddr rootrwoptions=rw,noatime rootrwreset=yes init=/lib/systemd/systemd" \
     > $boot_mnt/extlinux/extlinux.conf
 
     cp $build_dir/firmware/light_aon_fpga.bin $boot_mnt
