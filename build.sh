@@ -172,7 +172,7 @@ mk_img() {
 
     mkdir -p $boot_mnt/extlinux
 
-    line=$(blkid | grep $rootp)
+    line=$(blkid | grep $sdrootp)
     uuid=${line#*UUID=\"}
     uuid=${uuid%%\"*}
     
