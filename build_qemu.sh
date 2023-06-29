@@ -102,7 +102,7 @@ build_u-boot() {
         git clone --depth=1 https://github.com/u-boot/u-boot.git -b v2022.04
     fi
     cd u-boot
-    make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- riscv64_smode_defconfig
+    make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- qemu-riscv64_smode_defconfig
     make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- -j$(nproc)
     cp u-boot-nodtb.bin $build_dir/firmware
     cd $build_dir
