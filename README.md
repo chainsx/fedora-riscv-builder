@@ -2,15 +2,26 @@
 
 ## Getting Started
 
-### Supported SBCs
+### Supported Devices
 
 * [LicheePi-4A (8 + 8 Developer Edition)](./doc/install-guild-licheepi4a.md)
 
+* [QEMU](./doc/install-guild-qemu.md)
+
 ### Build Manually
+
+1.  LicheePi 4A
 
 ```
 git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
-bash build.sh
+bash build_lpi4a.sh
+```
+
+2.  QEMU
+
+```
+git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
+bash build_qemu.sh
 ```
 
 ### Download Pre-built Systems

@@ -64,7 +64,7 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          sudo bash build.sh
+          sudo bash build_lpi4a.sh
       - name: Upload
         if: needs.prepare_release.outputs.release_id != ''
         uses: xresloader/upload-to-github-release@v1
