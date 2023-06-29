@@ -70,8 +70,8 @@ get_riscv_system() {
     mount -t sysfs /sys ${rootfs_dir}/sys
 
     chroot ${rootfs_dir} dnf update -y
-    chroot ${rootfs_dir} dnf install alsa-utils haveged wpa_supplicant vim net-tools iproute iputils NetworkManager bluez fedora-release-server -y
-    chroot ${rootfs_dir} dnf install wget openssh-server openssh-clients passwd hostname parted realtek-firmware chkconfig e2fsprogs dracut -y
+    chroot ${rootfs_dir} dnf install alsa-utils haveged wpa_supplicant vim net-tools iproute iputils NetworkManager bluez fedora-release-server passwd hostname -y
+    chroot ${rootfs_dir} dnf install wget openssh-server openssh-clients parted realtek-firmware chkconfig e2fsprogs dracut NetworkManager-wifi NetworkManager-wwan -y
     echo fedora-riscv > ${rootfs_dir}/etc/hostname
     cp $build_dir/config/extend-root.sh ${rootfs_dir}/etc/rc.d/init.d/extend-root.sh
     cp $build_dir/config/lpi4a-sysfan.sh ${rootfs_dir}/opt/lpi4a-sysfan.sh
