@@ -41,6 +41,7 @@ UMOUNT_ALL(){
 }
 
 install_reqpkg() {
+    apt update -y
     apt install make bison bc flex kpartx xz-utils qemu-user-static libssl-dev gcc-riscv64-linux-gnu -y
 }
 
@@ -160,7 +161,7 @@ mk_img() {
     echo "label Fedora
     kernel /Image
     initrd /initrd.img
-    append  console=ttyS0,115200 root=UUID=${uuid} rootfstype=ext4 rootwait rw earlycon loglevel=7 rootrwoptions=rw,noatime rootrwreset=yes init=/lib/systemd/systemd" \
+    append  console=ttyS0,115200 root=UUID=${uuid} rootfstype=ext4 rootwait rw earlycon loglevel=7 init=/lib/systemd/systemd" \
     > $boot_mnt/extlinux/extlinux.conf
 
     cp $build_dir/firmware/fw_jump.bin $boot_mnt
