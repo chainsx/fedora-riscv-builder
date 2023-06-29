@@ -41,6 +41,7 @@ UMOUNT_ALL(){
 }
 
 install_reqpkg() {
+    apt update
     apt install make bison bc flex kpartx xz-utils qemu-user-static libssl-dev -y
 }
 

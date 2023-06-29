@@ -41,7 +41,7 @@ UMOUNT_ALL(){
 }
 
 install_reqpkg() {
-    apt update -y
+    apt update
     apt install make bison bc flex kpartx xz-utils qemu-user-static libssl-dev gcc-riscv64-linux-gnu -y
 }
 
@@ -201,7 +201,7 @@ comp_img() {
 
     mv $build_dir/firmware/fw_jump.bin $build_dir/tar_dir
     mv $build_dir/firmware/u-boot-nodtb.bin $build_dir/tar_dir
-    mv $build_dir/config/run-qemu-rv64.sh $build_dir/tar_dir
+    cp $build_dir/config/run-qemu-rv64.sh $build_dir/tar_dir
     mv $build_dir/rootfs.img $build_dir/tar_dir
 
     cd tar_dir && tar -zcvf ../Fedora-38-Minimal-QEMU-riscv64.tar.gz .
