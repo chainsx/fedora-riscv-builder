@@ -128,6 +128,17 @@ build_u-boot() {
     cd $build_dir
 }
 
+build_emmc-flasher() {
+    if [ ! -d $build_dir/thead-u-boot ]; then
+        git clone --depth=1 https://github.com/chainsx/thead-u-boot.git -b emmc-flasher emmc-flasher
+    fi
+    cd emmc-flasher
+    make ARCH=riscv CROSS_COMPILE=${build_dir}/riscv64-gcc/bin/riscv64-unknown-linux-gnu- light_lpi4a_defconfig
+    make ARCH=riscv CROSS_COMPILE=${build_dir}/riscv64-gcc/bin/riscv64-unknown-linux-gnu- -j$(nproc)
+    cp u-boot-with-spl.bin $build_dir/firmware/u-boot-emmc-flasher.bin
+    cd $build_dir
+}
+
 build_opensbi() {
     if [ ! -d $build_dir/thead-opensbi ]; then
         git clone --depth=1 https://github.com/revyos/thead-opensbi.git -b lpi4a
@@ -237,6 +248,7 @@ UMOUNT_ALL
 prepare_toolchain
 build_kernel
 build_u-boot
+build_emmc-flasher
 build_opensbi
 mk_img
 comp_img

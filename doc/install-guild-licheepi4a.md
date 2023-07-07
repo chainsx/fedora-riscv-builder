@@ -30,11 +30,16 @@ sudo ./fastboot flash uboot ./images/u-boot-with-spl.bin
 
 I don't need to tell you this, right?
 
-#### Flashing System to EMMC after boot
+#### Flashing System to EMMC use EMMC-Flasher
+
+You need to download the `u-boot-emmc-flasher.bin` file provided in the Release of this project.
 
 ```
-dd if=fedora.img of=/dev/mmcblk0
+sudo ./fastboot flash ram ./images/u-boot-emmc-flasher.bin
+sudo ./fastboot reboot
 ```
+
+Then the EMMC of LicheePi 4A will be mapped as a disk and displayed on your computer. At this time, you can use the etcher or dd command to write the image to it.
 
 ### u-boot System Selection Order
 
