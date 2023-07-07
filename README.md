@@ -4,7 +4,7 @@
 
 ### Supported Devices
 
-* [LicheePi-4A (8 + 8 Developer Edition)](./doc/install-guild-licheepi4a.md)
+* [LicheePi-4A](./doc/install-guild-licheepi4a.md)
 
 * [QEMU](./doc/install-guild-qemu.md)
 
