@@ -34,18 +34,21 @@ I don't need to tell you this, right?
 
 :)
 
-#### Flashing System to EMMC use EMMC-Flasher
+#### Flashing System to EMMC
 
-You need to download the `u-boot-emmc-flasher.bin` file provided in the Release of this project.
-
-Hold down the `BOOT` key and connect the power supply to the development board.
-
-```
-sudo ./fastboot flash ram ./images/u-boot-emmc-flasher.bin
-sudo ./fastboot reboot
-```
-
-Then the EMMC of LicheePi 4A will be mapped as a disk and displayed on your computer. At this time, you can use the `etcher` or `dd command` to write the image to it.
+1.  UMS (USB Mass Storage) function using u-boot (experimental):
+   
+    If there is a dial switch, please set it to EMMC mode.
+    
+    Use the serial port to interrupt with `Ctrl^C` when counting down the seconds in u-boot to enter the u-boot command line, and then enter the following command:
+    ```
+    ums 0 emmc 0
+    ```
+    Then EMMC will map the USB Mass Storage device onto the computer.
+    
+    The automatic access to UMS function is currently under development. Interested parties can help develop it together: https://github.com/chainsx/thead-u-boot/tree/emmc-flasher
+    
+3.  After booting using the SD card, add the img image to EMMC.
 
 ### u-boot System Selection Order
 
