@@ -17,6 +17,8 @@
 
 Refer to the [official Wiki](https://wiki.sipeed.com/hardware/zh/lichee/th1520/lpi4a/4_burn_image.html)
 
+Hold down the `BOOT` key and connect the power supply to the development board.
+
 ```
 sudo ./fastboot flash ram ./images/u-boot-with-spl.bin
 sudo ./fastboot reboot
@@ -30,16 +32,20 @@ sudo ./fastboot flash uboot ./images/u-boot-with-spl.bin
 
 I don't need to tell you this, right?
 
+:)
+
 #### Flashing System to EMMC use EMMC-Flasher
 
 You need to download the `u-boot-emmc-flasher.bin` file provided in the Release of this project.
+
+Hold down the `BOOT` key and connect the power supply to the development board.
 
 ```
 sudo ./fastboot flash ram ./images/u-boot-emmc-flasher.bin
 sudo ./fastboot reboot
 ```
 
-Then the EMMC of LicheePi 4A will be mapped as a disk and displayed on your computer. At this time, you can use the etcher or dd command to write the image to it.
+Then the EMMC of LicheePi 4A will be mapped as a disk and displayed on your computer. At this time, you can use the `etcher` or `dd command` to write the image to it.
 
 ### u-boot System Selection Order
 
