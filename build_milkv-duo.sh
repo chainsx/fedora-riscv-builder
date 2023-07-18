@@ -85,7 +85,8 @@ build_bsp() {
     fi
     cd duo-buildroot-sdk-glibc
     sudo bash build_milkv.sh
-    cp out/milkv*img $build_dir/milkv-buildroot.img
+    mv out/milkv*img $build_dir/milkv-buildroot.img
+    rm -rf buildroot-*/output
 }
 
 mk_img() {
@@ -99,6 +100,7 @@ mk_img() {
     dd if=/dev/zero of=add.img bs=1MiB count=$size status=progress && sync
 
     cat add.img >> ${img_file} && rm add.img
+    parted -s ${img_file} -- resizepart 2 100%
 
     device=`losetup -f --show -P ${img_file}`
     trap 'LOSETUP_D_IMG' EXIT
@@ -108,7 +110,6 @@ mk_img() {
 
     sdrootp=/dev/mapper/${loopX}p2
     
-    parted -s /dev/${loopX} -- resizepart 2 100%
     resize2fs ${sdrootp}
 
     mkdir -p ${root_mnt}
