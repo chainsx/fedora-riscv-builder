@@ -6,7 +6,9 @@
 
 * [LicheePi-4A](./doc/install-guild-licheepi4a.md)
 
-* [QEMU](./doc/install-guild-qemu.md)
+* Milk-V Duo
+
+* QEMU
 
 ### Build Manually
 
@@ -17,7 +19,14 @@ git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv
 bash build_lpi4a.sh
 ```
 
-2.  QEMU
+2.  Milk-V Duo
+
+```
+git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
+bash build_milkv-duo.sh
+```
+
+3.  QEMU
 
 ```
 git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
