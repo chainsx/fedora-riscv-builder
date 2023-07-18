@@ -75,6 +75,7 @@ get_riscv_system() {
 
     cat << EOF | chroot ${rootfs_dir}  /bin/bash
     echo 'fedora' | passwd --stdin root
+    systemctl disable systemd-resolved.service
 EOF
 
 }
