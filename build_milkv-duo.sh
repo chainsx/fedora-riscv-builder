@@ -125,7 +125,6 @@ mk_img() {
     sleep 10
 
     umount $sdrootp
-    umount $sdbootp
 
     LOSETUP_D_IMG
     UMOUNT_ALL
