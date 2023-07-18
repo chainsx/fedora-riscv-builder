@@ -36,7 +36,7 @@ install_reqpkg() {
     sudo -E apt-get -y install pkg-config build-essential ninja-build automake autoconf libtool wget curl git gcc libssl-dev bc slib
     sudo -E apt-get -y install squashfs-tools android-sdk-libsparse-utils jq python3-distutils scons parallel tree python3-dev python3-pip
     sudo -E apt-get -y install device-tree-compiler ssh cpio fakeroot libncurses5 flex bison libncurses5-dev genext2fs rsync unzip
-    sudo -E apt-get -y install dosfstools mtools tclsh ssh-client android-sdk-ext4-utils pixz
+    sudo -E apt-get -y install dosfstools mtools tclsh ssh-client android-sdk-ext4-utils pixz qemu-user-static
     sudo -E apt-get -y autoremove --purge
 
     sudo wget https://github.com/Kitware/CMake/releases/download/v3.26.4/cmake-3.26.4-linux-x86_64.sh
