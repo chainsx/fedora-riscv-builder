@@ -119,7 +119,7 @@ build_kernel() {
 
 build_u-boot() {
     if [ ! -d $build_dir/thead-u-boot ]; then
-        git clone --depth=1 https://github.com/chainsx/thead-u-boot.git -b distro_bootcmd
+        git clone --depth=1 https://github.com/chainsx/thead-u-boot.git -b extlinux
     fi
     cd thead-u-boot
     make ARCH=riscv CROSS_COMPILE=${build_dir}/riscv64-gcc/bin/riscv64-unknown-linux-gnu- light_lpi4a_defconfig
