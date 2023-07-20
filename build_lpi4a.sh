@@ -80,6 +80,7 @@ get_riscv_system() {
     chmod 755 ${rootfs_dir}/opt/lpi4a-sysfan.sh
     chmod 755 ${rootfs_dir}/usr/lib/systemd/system/lpi4a-sysfan.service
     chmod +x ${rootfs_dir}/etc/rc.d/init.d/extend-root.sh
+    sed -i "s|#PermitRootLogin prohibit-password|PermitRootLogin yes|g" ${rootfs_dir}/etc/ssh/sshd_config
 
     cat << EOF | chroot ${rootfs_dir}  /bin/bash
     echo 'fedora' | passwd --stdin root
