@@ -249,7 +249,7 @@ UMOUNT_ALL
 prepare_toolchain
 build_kernel
 build_u-boot
-build_emmc-flasher
+#build_emmc-flasher #TODO
 build_opensbi
 mk_img
 comp_img
