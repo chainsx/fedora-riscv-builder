@@ -42,7 +42,7 @@ UMOUNT_ALL(){
 
 install_reqpkg() {
     apt update
-    apt install make bison bc flex kpartx xz-utils qemu-user-static libssl-dev -y
+    apt install make bison bc flex kpartx xz-utils qemu-user-static libssl-dev gcc-riscv64-linux-gnu -y
 }
 
 get_riscv_system() {
@@ -75,10 +75,6 @@ get_riscv_system() {
     chroot ${rootfs_dir} dnf install wget openssh-server openssh-clients parted realtek-firmware chkconfig e2fsprogs dracut NetworkManager-wifi -y
     echo fedora-riscv > ${rootfs_dir}/etc/hostname
     cp $build_dir/config/extend-root.sh ${rootfs_dir}/etc/rc.d/init.d/extend-root.sh
-    cp $build_dir/config/lpi4a-sysfan.sh ${rootfs_dir}/opt/lpi4a-sysfan.sh
-    cp $build_dir/config/lpi4a-sysfan.service ${rootfs_dir}/usr/lib/systemd/system/lpi4a-sysfan.service
-    chmod 755 ${rootfs_dir}/opt/lpi4a-sysfan.sh
-    chmod 755 ${rootfs_dir}/usr/lib/systemd/system/lpi4a-sysfan.service
     chmod +x ${rootfs_dir}/etc/rc.d/init.d/extend-root.sh
     sed -i "s|#PermitRootLogin prohibit-password|PermitRootLogin yes|g" ${rootfs_dir}/etc/ssh/sshd_config
 
@@ -86,21 +82,10 @@ get_riscv_system() {
     echo 'fedora' | passwd --stdin root
     chkconfig --add extend-root.sh
     chkconfig extend-root.sh on
-    systemctl --no-reload enable lpi4a-sysfan.service
     dracut --no-kernel /boot/initrd.img
 EOF
 
 }
-
-prepare_toolchain() {
-    cd $build_dir
-    if [ ! -d $build_dir/riscv64-gcc ]; then
-        wget $toolchain_addr -O toolchain.tar.gz
-        tar -zxf toolchain.tar.gz
-        rm *tar.gz && mv Xuantie* riscv64-gcc
-    fi
-}
-
 
 build_kernel() {
     if [ ! -d $build_dir/thead-kernel ]; then
@@ -111,9 +96,9 @@ build_kernel() {
         rm arch/riscv/configs/linux-thead-current_defconfig
     fi
     cp $build_dir/config/linux-thead-current.config arch/riscv/configs/linux-thead-current_defconfig
-    make ARCH=riscv CROSS_COMPILE=${build_dir}/riscv64-gcc/bin/riscv64-unknown-linux-gnu- linux-thead-current_defconfig
-    make ARCH=riscv CROSS_COMPILE=${build_dir}/riscv64-gcc/bin/riscv64-unknown-linux-gnu- -j$(nproc)
-    make ARCH=riscv CROSS_COMPILE=${build_dir}/riscv64-gcc/bin/riscv64-unknown-linux-gnu- modules_install INSTALL_MOD_PATH=kmod
+    make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- linux-thead-current_defconfig
+    make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- -j$(nproc)
+    make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- modules_install INSTALL_MOD_PATH=kmod
     cd $build_dir
     cp -rfp thead-kernel/kmod/lib/modules/* rootfs/lib/modules
 }
@@ -123,20 +108,15 @@ build_u-boot() {
         git clone --depth=1 https://github.com/chainsx/thead-u-boot.git -b extlinux
     fi
     cd thead-u-boot
-    make ARCH=riscv CROSS_COMPILE=${build_dir}/riscv64-gcc/bin/riscv64-unknown-linux-gnu- light_lpi4a_defconfig
-    make ARCH=riscv CROSS_COMPILE=${build_dir}/riscv64-gcc/bin/riscv64-unknown-linux-gnu- -j$(nproc)
-    cp u-boot-with-spl.bin $build_dir/firmware
-    cd $build_dir
-}
+    make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- light_lpi4a_defconfig
+    make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- -j$(nproc)
+    cp u-boot-with-spl.bin $build_dir/firmware/lpi4a-8gb-u-boot-with-spl.bin
 
-build_emmc-flasher() {
-    if [ ! -d $build_dir/emmc-flasher ]; then
-        git clone --depth=1 https://github.com/chainsx/thead-u-boot.git -b emmc-flasher emmc-flasher
-    fi
-    cd emmc-flasher
-    make ARCH=riscv CROSS_COMPILE=${build_dir}/riscv64-gcc/bin/riscv64-unknown-linux-gnu- light_lpi4a_defconfig
-    make ARCH=riscv CROSS_COMPILE=${build_dir}/riscv64-gcc/bin/riscv64-unknown-linux-gnu- -j$(nproc)
-    cp u-boot-with-spl.bin $build_dir/firmware/u-boot-emmc-flasher.bin
+    make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- clean
+
+    make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- light_lpi4a_16g_defconfig
+    make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- -j$(nproc)
+    cp u-boot-with-spl.bin $build_dir/firmware/lpi4a-16gb-u-boot-with-spl.bin
     cd $build_dir
 }
 
@@ -145,7 +125,7 @@ build_opensbi() {
         git clone --depth=1 https://github.com/revyos/thead-opensbi.git -b lpi4a
     fi
     cd thead-opensbi
-    make PLATFORM=generic FW_PIC=y CROSS_COMPILE=${build_dir}/riscv64-gcc/bin/riscv64-unknown-linux-gnu- -j$(nproc)
+    make PLATFORM=generic FW_PIC=y CROSS_COMPILE=riscv64-linux-gnu- -j$(nproc)
     cp build/platform/generic/firmware/fw_dynamic.bin $build_dir/firmware
     cd $build_dir
 }
@@ -192,7 +172,7 @@ mk_img() {
     echo "label Fedora
     kernel /Image
     initrd /initrd.img
-    fdt /light-lpi4a.dtb
+    fdtdir /
     append  console=ttyS0,115200 root=UUID=${uuid} rootfstype=ext4 rootwait rw earlycon clk_ignore_unused loglevel=7 eth=$ethaddr rootrwoptions=rw,noatime rootrwreset=yes init=/lib/systemd/systemd" \
     > $boot_mnt/extlinux/extlinux.conf
 
@@ -241,15 +221,12 @@ root_mnt=${build_dir}/root_tmp
 rootfs_dir=${build_dir}/rootfs
 
 fedora_core_rootfs_addr="https://github.com/chainsx/fedora-riscv-builder/releases/download/basic-data/fedora-38-core-rootfs.tar.gz"
-toolchain_addr="https://github.com/chainsx/armbian-riscv-build/releases/download/toolchain/Xuantie-900-gcc-linux-5.10.4-glibc-x86_64-V2.6.1-20220906.tar.gz"
 
 install_reqpkg
 get_riscv_system
 UMOUNT_ALL
-prepare_toolchain
 build_kernel
 build_u-boot
-#build_emmc-flasher #TODO
 build_opensbi
 mk_img
 comp_img
