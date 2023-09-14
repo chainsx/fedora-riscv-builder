@@ -72,7 +72,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           release_id: ${{ needs.prepare_release.outputs.release_id }}
-          file: "./*.img.xz*;./firmware/u-boot-*.bin"
+          file: "./*.img.xz*;./firmware/*u-boot-*.bin"
           draft: false
       - name: Rollback release
         if: failure() && needs.prepare_release.outputs.release_id != ''
