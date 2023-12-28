@@ -1,0 +1,12 @@
+label: gpt
+label-id: 19A1FF26-DC8F-FA48-BD7C-1EADB0CB3F15
+device: /dev/loop0
+unit: sectors
+first-lba: 2048
+last-lba: 8191966
+sector-size: 512
+
+/dev/loop0p1 : start=        4096, size=        4096, type=2E54B353-1271-4842-806F-E436D6AF6985, uuid=2A645BDE-2B41-AE4D-9F7D-BD607FC5E074
+/dev/loop0p2 : start=        8192, size=        4096, type=5B193300-FC78-40CD-8002-E86C45580B47, uuid=60E04EDC-0DBE-A74E-921F-5B3D3DF83920
+/dev/loop0p3 : start=       12288, size=      598016, type=EBD0A0A2-B9E5-4433-87C0-68B6B72699C7, uuid=BA08B33B-1CCF-F544-9D29-BF7E546DF23A
+/dev/loop0p4 : start=      610304, size=     7581663, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4, uuid=124EB241-9E03-8949-A91B-5234F1316FB2
