@@ -8,6 +8,8 @@
 
 * Milk-V Duo
 
+* Starfive Visionfive 2
+
 * QEMU
 
 ### Build Manually
@@ -26,7 +28,15 @@ git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv
 bash build_milkv-duo.sh
 ```
 
-3.  QEMU
+3.  Starfive Visionfive 2
+
+```
+git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
+bash build_visionfive2.sh
+```
+
+
+4.  QEMU
 
 ```
 git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
