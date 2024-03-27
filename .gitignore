@@ -1,0 +1,7 @@
+linux
+opensbi
+rootfs
+tar_dir
+u-boot
+*.gz
+*.sha256

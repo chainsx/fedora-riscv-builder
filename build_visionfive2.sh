@@ -1,92 +1,5 @@
 #!/bin/bash
 
-LOSETUP_D_IMG(){
-    set +e
-    if [ -d ${root_mnt} ]; then
-        if grep -q "${root_mnt} " /proc/mounts ; then
-            umount ${root_mnt}
-        fi
-    fi
-    if [ -d ${boot_mnt} ]; then
-        if grep -q "${boot_mnt} " /proc/mounts ; then
-            umount ${boot_mnt}
-        fi
-    fi
-    if [ "x$device" != "x" ]; then
-        kpartx -d ${device}
-        losetup -d ${device}
-        device=""
-    fi
-    if [ -d ${root_mnt} ]; then
-        rm -rf ${root_mnt}
-    fi
-    if [ -d ${boot_mnt} ]; then
-        rm -rf ${boot_mnt}
-    fi
-    set -e
-}
-
-UMOUNT_ALL(){
-    set +e
-    if grep -q "${rootfs_dir}/dev " /proc/mounts ; then
-        umount -l ${rootfs_dir}/dev
-    fi
-    if grep -q "${rootfs_dir}/proc " /proc/mounts ; then
-        umount -l ${rootfs_dir}/proc
-    fi
-    if grep -q "${rootfs_dir}/sys " /proc/mounts ; then
-        umount -l ${rootfs_dir}/sys
-    fi
-    set -e
-}
-
-install_reqpkg() {
-    apt update
-    apt install parted zstd make bison bc flex kpartx xz-utils qemu-user-static libssl-dev gcc-riscv64-linux-gnu -y
-}
-
-get_riscv_system() {
-    cd $build_dir
-    if [ -f $build_dir/*rootfs.tar.gz ]; then
-        echo "clean tar..."
-        rm $build_dir/*rootfs.tar.gz
-    fi
-    wget $fedora_core_rootfs_addr -O rootfs.tar.gz
-    if [ ! -f $build_dir/rootfs.tar.gz ]; then
-        echo "system tar download failed!"
-        exit 2
-    fi
-
-    if [ -d ${rootfs_dir} ]; then
-        echo "clean rootfs..."
-        rm -rf ${rootfs_dir}
-    fi
-
-    mkdir ${rootfs_dir}
-    tar -zxvf rootfs.tar.gz -C ${rootfs_dir}
-    cp -b /etc/resolv.conf ${rootfs_dir}/etc/resolv.conf
-
-    mount --bind /dev ${rootfs_dir}/dev
-    mount -t proc /proc ${rootfs_dir}/proc
-    mount -t sysfs /sys ${rootfs_dir}/sys
-
-    chroot ${rootfs_dir} dnf update -y
-    chroot ${rootfs_dir} dnf install alsa-utils haveged wpa_supplicant vim net-tools iproute iputils NetworkManager bluez fedora-release-server passwd hostname -y
-    chroot ${rootfs_dir} dnf install wget openssh-server openssh-clients parted realtek-firmware chkconfig e2fsprogs dracut NetworkManager-wifi -y
-    echo fedora-riscv > ${rootfs_dir}/etc/hostname
-    cp $build_dir/config/extend-root.sh ${rootfs_dir}/etc/rc.d/init.d/extend-root.sh
-    chmod +x ${rootfs_dir}/etc/rc.d/init.d/extend-root.sh
-    sed -i "s|#PermitRootLogin prohibit-password|PermitRootLogin yes|g" ${rootfs_dir}/etc/ssh/sshd_config
-
-    cat << EOF | chroot ${rootfs_dir}  /bin/bash
-    echo 'fedora' | passwd --stdin root
-    chkconfig --add extend-root.sh
-    chkconfig extend-root.sh on
-    dracut --no-kernel /boot/initrd.img
-EOF
-
-}
-
 get_visionfive_tools() {
     if [ ! -d $build_dir/visionfive-tools ]; then
         git clone https://github.com/starfive-tech/soft_3rdpart.git -b JH7110_VisionFive2_devel visionfive-tools
@@ -227,7 +140,8 @@ boot_mnt=${build_dir}/boot_tmp
 root_mnt=${build_dir}/root_tmp
 rootfs_dir=${build_dir}/rootfs
 
-fedora_core_rootfs_addr="https://github.com/chainsx/fedora-riscv-builder/releases/download/basic-data/fedora-38-core-rootfs.tar.gz"
+source scripts/common.sh
+source scripts/fedora_rootfs.sh
 
 install_reqpkg
 get_riscv_system
