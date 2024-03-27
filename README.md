@@ -6,8 +6,6 @@
 
 * [LicheePi-4A](./doc/install-guild-licheepi4a.md)
 
-* Milk-V Duo
-
 * Starfive Visionfive 2
 
 * QEMU
@@ -21,22 +19,14 @@ git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv
 bash build_lpi4a.sh
 ```
 
-2.  Milk-V Duo
-
-```
-git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
-bash build_milkv-duo.sh
-```
-
-3.  Starfive Visionfive 2
+2.  Starfive Visionfive 2
 
 ```
 git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
 bash build_visionfive2.sh
 ```
 
-
-4.  QEMU
+3.  QEMU
 
 ```
 git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
