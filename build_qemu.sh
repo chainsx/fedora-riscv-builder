@@ -2,7 +2,7 @@
 
 build_kernel() {
     if [ ! -d $build_dir/linux ]; then
-        git clone --depth=1 https://github.com/torvalds/linux.git -b v6.2
+        git clone --depth=1 https://github.com/torvalds/linux.git -b v6.6
     fi
     cd linux
     if [ -f arch/riscv/configs/linux-qemu-current_defconfig ]; then
