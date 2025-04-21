@@ -143,8 +143,12 @@ rootfs_dir=${build_dir}/rootfs
 source scripts/common.sh
 source scripts/fedora_rootfs.sh
 
+default_param
+parseargs "$@" || help $?
+
 install_reqpkg
-get_riscv_system
+init_base_system ${fedora_version}
+install_riscv_pkgs
 get_visionfive_tools
 UMOUNT_ALL
 build_kernel

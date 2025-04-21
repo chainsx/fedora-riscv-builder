@@ -1,5 +1,19 @@
 #!/bin/bash
 
+__usage="
+Usage: build [OPTIONS]
+
+Options: 
+  --fedora_version FEDORA_VERSION
+  -h, --help
+"
+
+help()
+{
+    echo "$__usage"
+    exit $1
+}
+
 LOSETUP_D_IMG(){
     set +e
     if [ -d ${root_mnt} ]; then
@@ -42,5 +56,34 @@ UMOUNT_ALL(){
 
 install_reqpkg() {
     apt update
-    apt install parted zstd make bison bc flex kpartx xz-utils qemu-user-static libssl-dev gcc-riscv64-linux-gnu -y
+    apt install parted zstd make bison bc flex kpartx \
+                xz-utils qemu-user-static libssl-dev \
+                gcc-riscv64-linux-gnu dnf rpm -y
+}
+
+default_param() {
+    fedora_version=42
+}
+
+parseargs()
+{
+    if [ "x$#" == "x0" ]; then
+        return 0
+    fi
+
+    while [ "x$#" != "x0" ];
+    do
+        if [ "x$1" == "x-h" -o "x$1" == "x--help" ]; then
+            return 1
+        elif [ "x$1" == "x" ]; then
+            shift
+        elif [ "x$1" == "x--fedora_version" ]; then
+            fedora_version=`echo $2`
+            shift
+            shift
+        else
+            echo `date` - ERROR, UNKNOWN params "$@"
+            return 2
+        fi
+    done
 }

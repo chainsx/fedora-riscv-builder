@@ -12,25 +12,56 @@
 
 ### Build Manually
 
+#### Host
+
+Ubuntu 22.04/24.04
+
 1.  LicheePi 4A
+
+Fedora 42
 
 ```
 git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
-bash build_lpi4a.sh
+bash build_lpi4a.sh --fedora_version 42
+```
+
+Fedora 41
+
+```
+git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
+bash build_lpi4a.sh --fedora_version 41
 ```
 
 2.  Starfive Visionfive 2
 
+Fedora 42
+
 ```
 git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
-bash build_visionfive2.sh
+bash build_visionfive2.sh --fedora_version 42
+```
+
+Fedora 41
+
+```
+git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
+bash build_visionfive2.sh --fedora_version 41
 ```
 
 3.  QEMU
 
+Fedora 42
+
 ```
 git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
-bash build_qemu.sh
+bash build_qemu.sh --fedora_version 42
+```
+
+Fedora 41
+
+```
+git clone https://github.com/chainsx/fedora-riscv-builder.git && cd fedora-riscv-builder
+bash build_qemu.sh --fedora_version 41
 ```
 
 ### Download Pre-built Systems
@@ -42,33 +73,7 @@ bash build_qemu.sh
 
 ----
 
-### Instructions
-
-The project requires a file named `fedora-39-core-rootfs.tar.gz` to be built using a Fedora 39 host or docker with the RISC-V architecture. The build process is as follows. If you do not wish to build it yourself, you can use the pre-built file provided by the project.
-
-```
-sudo su && cd ~
-WORKDIR=$(pwd)
-
-cd $WORKDIR
-mkdir rootfs
-mkdir -p rootfs/var/lib/rpm
-rpm --root  $WORKDIR/rootfs/ --initdb
-
-rpm -ivh --nodeps --root $WORKDIR/rootfs/ http://fedora.riscv.rocks/repos-dist/f39/latest/riscv64/Packages/f/fedora-release-39-0.21.noarch.rpm
-
-mkdir -p $WORKDIR/rootfs/etc/yum.repos.d
-cp <this_repo_dir>./repo/*repo $WORKDIR/rootfs/etc/yum.repos.d
-sed -i "s|f38|f39|g" $WORKDIR/rootfs/etc/yum.repos.d/fedora-riscv.repo
-sed -i "s|f38|f39|g" $WORKDIR/rootfs/etc/yum.repos.d/fedora-riscv-koji.repo  # for fedora 39
-dnf --installroot=$WORKDIR/rootfs/ install dnf --nogpgcheck -y
-
-cd $WORKDIR/rootfs
-tar -zcvf fedora-39-core-rootfs.tar.gz .
-```
-
-This way, you will obtain the `fedora-39-core-rootfs.tar.gz` file required for the project script in the `/root` directory.
-
 ## Reference && Thanks
 
 [fedora.riscv.rocks](http://fedora.riscv.rocks)
+
