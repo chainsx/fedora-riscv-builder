@@ -122,15 +122,15 @@ comp_img() {
     cp $build_dir/config/run-qemu-rv64.sh $build_dir/tar_dir
     mv $build_dir/rootfs.img $build_dir/tar_dir
 
-    cd tar_dir && tar -zcvf ../Fedora-38-Minimal-QEMU-riscv64.tar.gz .
+    cd tar_dir && tar -zcvf ../Fedora-${fedora_version}-Minimal-QEMU-riscv64.tar.gz .
     cd $build_dir
 
-    if [ ! -f $build_dir/Fedora-38-Minimal-QEMU-riscv64.tar.gz ]; then
+    if [ ! -f $build_dir/Fedora-${fedora_version}-Minimal-QEMU-riscv64.tar.gz ]; then
         echo "image file build failed!"
         exit 2
     fi
 
-    sha256sum Fedora-38-Minimal-QEMU-riscv64.tar.gz >> Fedora-38-Minimal-QEMU-riscv64.tar.gz.sha256
+    sha256sum Fedora-${fedora_version}-Minimal-QEMU-riscv64.tar.gz >> Fedora-${fedora_version}-Minimal-QEMU-riscv64.tar.gz.sha256
 
 }
 

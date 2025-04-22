@@ -129,9 +129,9 @@ comp_img() {
     fi
 
     xz -v sd.img
-    mv sd.img.xz Fedora-38-Minimal-VisionFive2-riscv64-sd.img.xz
+    mv sd.img.xz Fedora-${fedora_version}-Minimal-VisionFive2-riscv64-sd.img.xz
 
-    sha256sum Fedora-38-Minimal-VisionFive2-riscv64-sd.img.xz >> Fedora-38-Minimal-VisionFive2-riscv64-sd.img.xz.sha256
+    sha256sum Fedora-${fedora_version}-Minimal-VisionFive2-riscv64-sd.img.xz >> Fedora-${fedora_version}-Minimal-VisionFive2-riscv64-sd.img.xz.sha256
 
 }
 
