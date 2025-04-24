@@ -18,7 +18,7 @@ build_kernel() {
 
 build_u-boot() {
     if [ ! -d $build_dir/u-boot ]; then
-        git clone --depth=1 https://github.com/u-boot/u-boot.git -b v2022.04
+        git clone --depth=1 https://github.com/u-boot/u-boot.git -b v2025.04
     fi
     cd u-boot
     make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- qemu-riscv64_smode_defconfig
@@ -29,7 +29,7 @@ build_u-boot() {
 
 build_opensbi() {
     if [ ! -d $build_dir/opensbi ]; then
-        git clone --depth=1 https://github.com/riscv-software-src/opensbi.git -b v1.3
+        git clone --depth=1 https://github.com/riscv-software-src/opensbi.git -b v1.6
     fi
     cd opensbi
     make PLATFORM=generic PLATFORM_RISCV_XLEN=64 CROSS_COMPILE=riscv64-linux-gnu- -j$(nproc)
